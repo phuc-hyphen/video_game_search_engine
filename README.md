@@ -1,7 +1,11 @@
 # Template for the Video Game Search Engine project
+Build CI:
+[![build workflow](https://github.com/phuc-hyphen/video_game_search_engine/actions/workflows/build.yml/badge.svg)](https://github.com/phuc-hyphen/java_api_training/actions/workflows/build.yml)
 
-[![build workflow](https://github.com/lernejo/video_game_search_engine_template/actions/workflows/build.yml/badge.svg)](https://github.com/lernejo/video_game_search_engine_template/actions)
-[![codecov](https://codecov.io/gh/lernejo/video_game_search_engine_template/branch/main/graph/badge.svg)](https://codecov.io/gh/lernejo/video_game_search_engine_template)
+Code coverage:
+[![codecov](https://codecov.io/gh/phuc-hyphen/video_game_search_engine/branch/main/graph/badge.svg)](https://codecov.io/gh/phuc-hyphen/java_api_training)
+
+
 
 ## Build the project
 
