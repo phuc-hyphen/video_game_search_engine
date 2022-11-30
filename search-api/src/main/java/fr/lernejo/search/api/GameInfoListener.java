@@ -22,8 +22,8 @@ import static fr.lernejo.search.api.AmqpConfiguration.GAME_INFO_QUEUE;
 @Component
 public class GameInfoListener {
 
-    final RestHighLevelClient client;
-    final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+    private final RestHighLevelClient client;
+    private final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
 
     public GameInfoListener(RestHighLevelClient rest) {
         this.client = rest;
@@ -32,24 +32,22 @@ public class GameInfoListener {
     @RabbitListener(queues = {GAME_INFO_QUEUE})
     void onMessage(final Message message) {
 
-        String id = message.getMessageProperties().getHeaders().get("id").toString();
-//        System.out.println(message.getMessageProperties().getContentType());
-        String messBody = new String(message.getBody(), StandardCharsets.UTF_8);
-//        System.out.println(messBody);
         //indexer le document
-        IndexRequest request = new IndexRequest("games");
-        request.id(id).source(messBody, XContentType.JSON);
+        IndexRequest request = new IndexRequest("games")
+            .id(message.getMessageProperties().getHeaders().get("id").toString())
+            .source(new String(message.getBody(), StandardCharsets.UTF_8), XContentType.JSON);
         try {
             IndexResponse response = client.index(request, RequestOptions.DEFAULT);
-//            System.out.println(response.status().getStatus());
         } catch (ElasticsearchException e) {
-            if (e.status() == RestStatus.CONFLICT) {
+            if (e.status() == RestStatus.CONFLICT)
                 throw e;
-            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 }
-//application/json
-//https://www.tabnine.com/code/java/classes/org.springframework.amqp.core.Message
+//        String id =
+//        String messBody = ;
+//        System.out.println(message.getMessageProperties().getContentType());
+//        System.out.println(messBody);
+//            System.out.println(response.status().getStatus());
