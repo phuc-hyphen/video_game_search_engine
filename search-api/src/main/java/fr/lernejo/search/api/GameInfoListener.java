@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import static fr.lernejo.search.api.AmqpConfiguration.GAME_INFO_QUEUE;
 
@@ -32,13 +33,13 @@ public class GameInfoListener {
     void onMessage(final Message message) {
 
         String id = message.getMessageProperties().getHeaders().get("id").toString();
+//        System.out.println(message.getMessageProperties().getContentType());
         String messBody = new String(message.getBody(), StandardCharsets.UTF_8);
-        System.out.println(messBody);
+//        System.out.println(messBody);
         //indexer le document
         IndexRequest request = new IndexRequest("games");
         request.id(id).source(messBody, XContentType.JSON);
         try {
-//            String ms = mapper.writeValueAsString(messBody);
             IndexResponse response = client.index(request, RequestOptions.DEFAULT);
 //            System.out.println(response.status().getStatus());
         } catch (ElasticsearchException e) {

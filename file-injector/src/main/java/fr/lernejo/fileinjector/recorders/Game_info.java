@@ -10,8 +10,8 @@ import java.time.LocalDate;
 
 //@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 //@JsonSerialize
-public record Game_info(int id, String title, String thumbnail, String short_description, String game_url,
-                        String genre, String platform, String publisher, String developer,
-//                         String release_date,
-                        @JsonSerialize(using = LocalDateSerializer.class) LocalDate release_date, String freetogame_profile_url) {
+public record Game_info(int id, String title, String thumbnail, String short_description, String game_url, String genre,
+                        String platform, String publisher, String developer,
+                        @JsonSerialize(using = LocalDateSerializer.class) LocalDate release_date,
+                        String freetogame_profile_url) {
 }

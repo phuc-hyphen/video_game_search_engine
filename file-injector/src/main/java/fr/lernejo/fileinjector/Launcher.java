@@ -1,6 +1,5 @@
 package fr.lernejo.fileinjector;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.lernejo.fileinjector.recorders.Game_info;
@@ -12,31 +11,31 @@ import org.springframework.context.support.AbstractApplicationContext;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 @SpringBootApplication
 public class Launcher {
 
     public static void main(String[] args) {
-        final String game_path = "file-injector/src/main/java/fr/lernejo/fileinjector/games_c.json";
         final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
         final AbstractApplicationContext springContext = new AnnotationConfigApplicationContext(Launcher.class);
-        final var rabbitTemplate = springContext.getBean(RabbitTemplate.class);
-
-        mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-        try {
-            final List<Game_info> games = Arrays.asList(mapper.readValue(new File(game_path), Game_info[].class));
-            String prettyMS = mapper.writeValueAsString(games);
-//            System.out.println(prettyMS);
-//            System.out.println("Hello after starting Spring");
-            rabbitTemplate.convertAndSend("", "game_info", prettyMS); // sending message
-
+        try (springContext) {
+            SendingMessages(mapper, springContext);
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            springContext.close();
+        }
+    }
+    private static void SendingMessages(ObjectMapper mapper, AbstractApplicationContext springContext) throws IOException {
+        final var rabbitTemplate = springContext.getBean(RabbitTemplate.class);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+        final Game_info[] games = mapper.readValue(new File("file-injector/src/main/java/fr/lernejo/fileinjector/games_c.json"), Game_info[].class);
+        for (Game_info game : games) {
+            String prettyMS = mapper.writeValueAsString(game);
+//                System.out.println("print" + game.id());
+            rabbitTemplate.convertAndSend("game_info", prettyMS, m -> {
+                m.getMessageProperties().getHeaders().put("id", game.id());
+                m.getMessageProperties().setContentType("appplication/json");
+                return m;
+            }); // sending message
         }
     }
 }
