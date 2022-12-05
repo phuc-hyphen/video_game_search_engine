@@ -46,8 +46,5 @@ public class GameInfoListener {
         }
     }
 }
-//        String id =
-//        String messBody = ;
-//        System.out.println(message.getMessageProperties().getContentType());
-//        System.out.println(messBody);
-//            System.out.println(response.status().getStatus());
+//http://localhost:9200/games/_doc/1
+//http://localhost:9200/_cat/indices/games*?v=true&s=index

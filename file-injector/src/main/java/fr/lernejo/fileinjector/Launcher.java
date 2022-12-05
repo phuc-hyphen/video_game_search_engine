@@ -27,7 +27,7 @@ public class Launcher {
     private static void SendingMessages(ObjectMapper mapper, AbstractApplicationContext springContext) throws IOException {
         final var rabbitTemplate = springContext.getBean(RabbitTemplate.class);
         mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-        final Game_info[] games = mapper.readValue(new File("file-injector/src/main/java/fr/lernejo/fileinjector/games_c.json"), Game_info[].class);
+        final Game_info[] games = mapper.readValue(new File("file-injector/src/test/resources/games.json"), Game_info[].class);
         for (Game_info game : games) {
             String prettyMS = mapper.writeValueAsString(game);
 //                System.out.println("print" + game.id());
