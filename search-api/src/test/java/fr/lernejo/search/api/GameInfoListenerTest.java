@@ -19,8 +19,8 @@ import java.net.http.HttpResponse;
 class GameInfoListenerTest {
     @Test
     void check_existant_of_doc(@Autowired MockMvc mockMvc) throws Exception {
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("http://localhost:9200/games/_doc/1")).andExpect(MockMvcResultMatchers.status().isNotFound());
+//        mockMvc
+//            .perform(MockMvcRequestBuilders.get("/games/_doc/1")).andExpect(MockMvcResultMatchers.status().isNotFound());
 //        Launcher.main(new String[]{});
 //        HttpClient client = HttpClient.newHttpClient();
 //        HttpRequest getRequest = HttpRequest.newBuilder()

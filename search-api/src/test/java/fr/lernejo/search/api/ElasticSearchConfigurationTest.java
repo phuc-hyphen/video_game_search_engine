@@ -32,6 +32,7 @@ class ElasticSearchConfigurationTest {
 
     @Test
     void getindex() throws IOException {
+//        Launcher.main(new String[]{});
         RestHighLevelClient client = restClient();
         GetIndexRequest request = new GetIndexRequest("games");
         GetIndexResponse getIndexResponse = client.indices().get(request, RequestOptions.DEFAULT);

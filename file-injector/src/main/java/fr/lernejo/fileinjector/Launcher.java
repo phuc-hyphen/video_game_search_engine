@@ -39,11 +39,11 @@ public class Launcher {
         final Game_info[] games = mapper.readValue(Paths.get(filePath).toFile(), Game_info[].class);
 
         for (Game_info game : games) {
-            String prettyMS = mapper.writeValueAsString(game);
+//            String prettyMS = mapper.writeValueAsString(game);
 //                System.out.println("print" + game.id());
-            rabbitTemplate.convertAndSend("game_info", prettyMS, m -> {
+            rabbitTemplate.convertAndSend("","game_info", game, m -> {
                 m.getMessageProperties().getHeaders().put("game_id", game.id());
-                m.getMessageProperties().setContentType("appplication/json");
+//                m.getMessageProperties().setContentType("appplication/json");
                 return m;
             }); // sending message
         }
