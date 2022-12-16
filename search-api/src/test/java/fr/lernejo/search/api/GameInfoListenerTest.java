@@ -65,8 +65,6 @@ class GameInfoListenerTest {
             m.getMessageProperties().setContentType("appplication/json");
             return m;
         });
-        var ms = rabbitTemplate.receive("game_info");
-        assert ms != null;
     }
 
 }
