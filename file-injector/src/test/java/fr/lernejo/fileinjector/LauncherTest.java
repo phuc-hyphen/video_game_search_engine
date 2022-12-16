@@ -34,16 +34,41 @@ class LauncherTest {
         System.setOut(ps);
 
         String[] args = {};
-        IOException test = new IOException();
+        IOException test = null;
+        try {
+            Launcher.main(args);
+        } catch (IOException e) {
+            test = e;
+        }
+        Assertions.assertThat(test).isNull();
+        Assertions.assertThat(baos.toString()).contains("Argument missing : At least one for the path of the resource !!! ");
+
+        System.out.flush();
+        System.setOut(old);
+    }
+
+    @Test
+    void Launcher_WITH_GOOD_ARGUMENT_Test() {
+        String[] args = {"/home/huu-phuc-le/JAVA/video_game_search_engine/file-injector/src/test/resources/games.json"};
+        IOException test = null;
+        try {
+            Launcher.main(args);
+        } catch (IOException e) {
+            test = e;
+        }
+        Assertions.assertThat(test).isNull();
+    }
+
+    @Test
+    void Launcher_WITH_BAD_ARGUMENT_Test() {
+        String[] args = {"/home/huu-phuc-le/JAVA/video_game_search_engine/file-injector/src/test/resources/not_game.json"};
+        IOException test = null;
         try {
             Launcher.main(args);
         } catch (IOException e) {
             test = e;
         }
         Assertions.assertThat(test).isNotNull();
-        Assertions.assertThat(baos.toString()).contains("Argument missing : At least one for the path of the resource !!! ");
 
-        System.out.flush();
-        System.setOut(old);
     }
 }

@@ -29,7 +29,6 @@ public class Launcher {
         else {
             System.out.println("Argument missing : At least one for the path of the resource !!! ");
         }
-
     }
 
     private static void SendingMessages(ObjectMapper mapper, AbstractApplicationContext springContext, String filePath) throws IOException, InvalidPathException {
@@ -39,11 +38,10 @@ public class Launcher {
         final Game_info[] games = mapper.readValue(Paths.get(filePath).toFile(), Game_info[].class);
 
         for (Game_info game : games) {
-//            String prettyMS = mapper.writeValueAsString(game);
-//                System.out.println("print" + game.id());
-            rabbitTemplate.convertAndSend("","game_info", game, m -> {
+            String str_game = mapper.writeValueAsString(game);
+            rabbitTemplate.convertAndSend("","game_info", str_game, m -> {
                 m.getMessageProperties().getHeaders().put("game_id", game.id());
-//                m.getMessageProperties().setContentType("appplication/json");
+                m.getMessageProperties().setContentType("appplication/json");
                 return m;
             }); // sending message
         }
