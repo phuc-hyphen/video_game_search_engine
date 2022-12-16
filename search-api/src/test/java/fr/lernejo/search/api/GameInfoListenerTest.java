@@ -2,7 +2,15 @@ package fr.lernejo.search.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.assertj.core.api.Assertions;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestClientBuilder;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -22,8 +31,7 @@ import java.net.http.HttpResponse;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@AutoConfigureMockMvc
+
 class GameInfoListenerTest {
     String SAMPLE_RESPONSE_PAYLOAD = """
         {
@@ -45,8 +53,9 @@ class GameInfoListenerTest {
     }
 
     @Test
-    void check_listener() throws Exception {
+    void check_existant_of_doc() {
         final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+
         final AbstractApplicationContext springContext = new AnnotationConfigApplicationContext(Launcher.class);
         final var rabbitTemplate = springContext.getBean(RabbitTemplate.class);
         mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
@@ -56,19 +65,8 @@ class GameInfoListenerTest {
             m.getMessageProperties().setContentType("appplication/json");
             return m;
         });
-//        {"vhost":"/","name":"amq.default","properties":{"delivery_mode":1,"headers":{"id":"1000"}},"routing_key":"game_info","delivery_mode":"1","payload":"sdfsdfsd","headers":{"id":"1000"},"props":{},"payload_encoding":"string"}
-//        HttpRequest getRequest = HttpRequest.newBuilder()
-//            .uri(URI.create("http://localhost:9200/games/_doc/1000"))
-//            .header("Authorization", getBasicAuthenticationHeader("elastic", "admin"))
-//            .build();
-//
-//        HttpClient client = HttpClient.newHttpClient();
-//        HttpRequest getRequest = HttpRequest.newBuilder()
-//            .uri(URI.create("http://localhost:9200/games/_doc/1000"))
-//            .header("Authorization", getBasicAuthenticationHeader("elastic", "admin"))
-//            .build();
-//        HttpResponse<String> response = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
-//        Assertions.assertThat(response.statusCode()).isEqualTo(200);
+        var ms = rabbitTemplate.receive("game_info");
+        assert ms != null;
     }
 
 }

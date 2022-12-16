@@ -51,7 +51,7 @@ class LauncherTest {
     void Launcher_WITH_GOOD_ARGUMENT_Test() {
         IOException test = null;
         try {
-            Launcher.main(new String[]{"/src/test/resources/games.json"});
+            Launcher.main(new String[]{"../file-injector/src/test/resources/games.json"});
         } catch (IOException e) {
             test = e;
         }
@@ -60,7 +60,7 @@ class LauncherTest {
 
     @Test
     void Launcher_WITH_BAD_ARGUMENT_Test() {
-        String[] args = {"/home/huu-phuc-le/JAVA/video_game_search_engine/file-injector/src/test/resources/not_game.json"};
+        String[] args = {"../file-injector/src/test/resources/not_game.json"};
         IOException test = null;
         try {
             Launcher.main(args);
