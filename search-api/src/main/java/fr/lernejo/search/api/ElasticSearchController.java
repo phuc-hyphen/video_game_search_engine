@@ -43,30 +43,31 @@ public class ElasticSearchController {
 //        .defaultOperator(Operator.AND)size(5)
         searchSourceBuilder.query(new QueryStringQueryBuilder(query)).size(20);
         searchRequest.source(searchSourceBuilder);
+        GetReponse(game_infos, searchRequest);
+        return game_infos;
+    }
+
+    private void GetReponse(List<Map<String, Object>> game_infos, SearchRequest searchRequest) {
         SearchResponse searchResponse = null;
         try {
             searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+            RestStatus status = searchResponse.status();
+//        System.out.println(status.toString());
+            parseReponse(game_infos, searchResponse);
         } catch (ElasticsearchException e) {
             if (e.status() == RestStatus.CONFLICT) throw e;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        assert searchResponse != null; //TODO
-        RestStatus status = searchResponse.status();
-        System.out.println(status.toString());
-        SearchHits hits = searchResponse.getHits();
-//        TotalHits totalHits = hits.getTotalHits();
-//        System.out.println(totalHits.value);
+    }
 
+    private static void parseReponse(List<Map<String, Object>> game_infos, SearchResponse searchResponse) {
+        SearchHits hits = searchResponse.getHits();
         SearchHit[] searchHits = hits.getHits();
-//        mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
         for (SearchHit hit : searchHits) {
-            // do something with the SearchHit
-            System.out.println(hit.getSourceAsString());
+//            System.out.println(hit.getSourceAsString());
             Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-//            Game_info gameInfo = mapper.convertValue(sourceAsMap, Game_info.class);
             game_infos.add(sourceAsMap);
         }
-        return game_infos;
     }
 }

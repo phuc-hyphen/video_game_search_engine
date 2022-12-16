@@ -13,5 +13,6 @@ import java.time.LocalDate;
 public record Game_info(int id, String title, String thumbnail, String short_description, String game_url, String genre,
                         String platform, String publisher, String developer,
                         @JsonSerialize(using = LocalDateSerializer.class) LocalDate release_date,
-                        String freetogame_profile_url) {
+                        String freetogame_profile_url)
+{
 }
