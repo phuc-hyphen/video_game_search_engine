@@ -30,12 +30,13 @@ public class GameInfoListener {
     }
 
     @RabbitListener(queues = {GAME_INFO_QUEUE})
-    void onMessage(final Message message) {
+    public void onMessage(final Message message) {
 
-        IndexRequest request = new IndexRequest("games")
-            .id(message.getMessageProperties().getHeaders().get("id").toString())
+        IndexRequest request = new IndexRequest("games");
+        request.id(message.getMessageProperties().getHeaders().get("id").toString())
             .source(new String(message.getBody(), StandardCharsets.UTF_8), XContentType.JSON);
 //        indexSync(request);
+//        System.out.println(new String(message.getBody(), StandardCharsets.UTF_8));
 
         indexAsync(request);
     }
@@ -44,7 +45,7 @@ public class GameInfoListener {
         ActionListener<IndexResponse> listener = new ActionListener<IndexResponse>() {
             @Override
             public void onResponse(IndexResponse indexResponse) {
-                System.out.println(indexResponse.status());
+
             }
 
             @Override
