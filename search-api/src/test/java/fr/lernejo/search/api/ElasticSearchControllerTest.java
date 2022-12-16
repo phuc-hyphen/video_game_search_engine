@@ -33,11 +33,11 @@ class ElasticSearchControllerTest {
         }
         """.stripTrailing();
 
-    @Test
-    void checkHomePage(@Autowired MockMvc mockMvc) throws Exception {
-        mockMvc
-            .perform(MockMvcRequestBuilders.get("/")).andExpect(MockMvcResultMatchers.status().isOk());
-    }
+//    @Test
+//    void checkHomePage(@Autowired MockMvc mockMvc) throws Exception {
+//        mockMvc
+//            .perform(MockMvcRequestBuilders.get("/")).andExpect(MockMvcResultMatchers.status().isOk());
+//    }
 //        System.out.println(response.body());
 
 
@@ -60,13 +60,13 @@ class ElasticSearchControllerTest {
             e.printStackTrace();
         }
     }
-    @Test
-    void Get2GamesDeveloppedbyEpicGame(@Autowired MockMvc mockMvc) throws Exception {
-        CheckGetGames(mockMvc,"developer:\"Epic Games\"",2);
-    }
-
-    @Test
-    void GetGamesComplex(@Autowired MockMvc mockMvc) throws Exception {
-        CheckGetGames(mockMvc,"genre:Strategy AND developer:\"Epic Games\"",1);
-    }
+//    @Test
+//    void Get2GamesDeveloppedbyEpicGame(@Autowired MockMvc mockMvc) throws Exception {
+//        CheckGetGames(mockMvc,"developer:\"Epic Games\"",2);
+//    }
+//
+//    @Test
+//    void GetGamesComplex(@Autowired MockMvc mockMvc) throws Exception {
+//        CheckGetGames(mockMvc,"genre:Strategy AND developer:\"Epic Games\"",1);
+//    }
 }

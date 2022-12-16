@@ -5,14 +5,11 @@ import org.springframework.amqp.core.Queue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AmqpConfigurationTest {
-
-    AmqpConfiguration amp1 = new AmqpConfiguration();
+class LauncherTest {
 
 //    @Test
 //    void check_queue_info() {
 //        assertEquals(new Queue("game_info", true), amp1.queue(),
 //            "fail to add new queue");
 //    }
-
 }

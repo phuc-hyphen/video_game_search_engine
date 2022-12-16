@@ -10,6 +10,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 
 @SpringBootApplication
@@ -19,15 +20,17 @@ public class Launcher {
         final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
         final AbstractApplicationContext springContext = new AnnotationConfigApplicationContext(Launcher.class);
         try (springContext) {
-            SendingMessages(mapper, springContext);
+            SendingMessages(mapper, springContext,args[0]);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    private static void SendingMessages(ObjectMapper mapper, AbstractApplicationContext springContext) throws IOException {
+    private static void SendingMessages(ObjectMapper mapper, AbstractApplicationContext springContext, String filePath) throws IOException {
         final var rabbitTemplate = springContext.getBean(RabbitTemplate.class);
         mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-        final Game_info[] games = mapper.readValue(new File("file-injector/src/test/resources/games.json"), Game_info[].class);
+//        final Game_info[] games = mapper.readValue(new File(filePath), Game_info[].class);
+        final Game_info[] games = mapper.readValue(Paths.get(filePath).toFile(), Game_info[].class);
+
         for (Game_info game : games) {
             String prettyMS = mapper.writeValueAsString(game);
 //                System.out.println("print" + game.id());
