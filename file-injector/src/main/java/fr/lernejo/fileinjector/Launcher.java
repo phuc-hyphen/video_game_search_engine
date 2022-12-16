@@ -42,7 +42,7 @@ public class Launcher {
             String prettyMS = mapper.writeValueAsString(game);
 //                System.out.println("print" + game.id());
             rabbitTemplate.convertAndSend("game_info", prettyMS, m -> {
-                m.getMessageProperties().getHeaders().put("id", game.id());
+                m.getMessageProperties().getHeaders().put("game_id", game.id());
                 m.getMessageProperties().setContentType("appplication/json");
                 return m;
             }); // sending message

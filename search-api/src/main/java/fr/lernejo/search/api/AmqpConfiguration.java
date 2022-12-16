@@ -19,10 +19,4 @@ public class AmqpConfiguration {
         return new Jackson2JsonMessageConverter();
     }
 
-//    @Bean
-//    public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
-//        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-//        rabbitTemplate.setMessageConverter(messageConverter());
-//        return rabbitTemplate;
-//    }
 }
