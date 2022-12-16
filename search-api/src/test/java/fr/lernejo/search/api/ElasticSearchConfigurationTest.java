@@ -30,16 +30,16 @@ class ElasticSearchConfigurationTest {
         return new RestHighLevelClient(builder);
     }
 
-    @Test
-    void getindex() throws IOException {
-//        Launcher.main(new String[]{});
-        RestHighLevelClient client = restClient();
-        GetIndexRequest request = new GetIndexRequest("games");
-        GetIndexResponse getIndexResponse = client.indices().get(request, RequestOptions.DEFAULT);
-        MappingMetadata indexMappings = getIndexResponse.getMappings().get("games");
-        Map<String, Object> indexTypeMappings = indexMappings.getSourceAsMap();
-        assertNotEquals(0, indexTypeMappings.size());
-    }
+//    @Test
+//    void getindex() throws IOException {
+////        Launcher.main(new String[]{});
+//        RestHighLevelClient client = restClient();
+//        GetIndexRequest request = new GetIndexRequest("games");
+//        GetIndexResponse getIndexResponse = client.indices().get(request, RequestOptions.DEFAULT);
+//        MappingMetadata indexMappings = getIndexResponse.getMappings().get("games");
+//        Map<String, Object> indexTypeMappings = indexMappings.getSourceAsMap();
+//        assertNotEquals(0, indexTypeMappings.size());
+//    }
 
 
 }
