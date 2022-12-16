@@ -35,6 +35,7 @@ class ElasticSearchControllerTest {
         MvcResult result = mockMvc
             .perform(MockMvcRequestBuilders.get("/api/games?query=" + query))
             .andExpect(MockMvcResultMatchers.status().isOk())
+
             .andReturn();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -46,7 +47,7 @@ class ElasticSearchControllerTest {
                 });
             assertEquals(ExpResult, resultmap.size(), "not good number response");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(content);
         }
     }
 
@@ -68,7 +69,7 @@ class ElasticSearchControllerTest {
                 });
             assertEquals(ExpResult, resultmap.size(), "not good number response");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(content);
         }
     }
 }

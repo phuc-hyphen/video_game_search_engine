@@ -18,16 +18,12 @@ class AmqpConfigurationTest {
         String valueToEncode = username + ":" + password;
         return "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
     }
-//    AmqpConfiguration amp1 = new AmqpConfiguration();
 
     @Test
     void check_queue_exist() {
         RuntimeException test = null;
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest getRequest = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:15672/#/queues/%2F/game_info"))
-            .header("Authorization", getBasicAuthenticationHeader("guest", "guest"))
-            .build();
+        HttpRequest getRequest = HttpRequest.newBuilder().uri(URI.create("http://localhost:15672/#/queues/%2F/game_info")).header("Authorization", getBasicAuthenticationHeader("guest", "guest")).build();
         try {
             HttpResponse<String> response = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
             Assertions.assertThat(response.statusCode()).isEqualTo(200);
