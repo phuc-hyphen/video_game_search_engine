@@ -49,7 +49,7 @@ class LauncherTest {
 
     @Test
     void Launcher_WITH_GOOD_ARGUMENT_Test() {
-        String[] args = {"/home/huu-phuc-le/JAVA/video_game_search_engine/file-injector/src/test/resources/games.json"};
+        String[] args = {"file-injector/src/test/resources/games.json"};
         IOException test = null;
         try {
             Launcher.main(args);
