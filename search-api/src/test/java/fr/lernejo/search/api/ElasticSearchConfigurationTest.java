@@ -9,28 +9,25 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.hamcrest.CoreMatchers.containsStringIgnoringCase;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@AutoConfigureMockMvc
 class ElasticSearchConfigurationTest {
 
-    RestHighLevelClient restClient(
-    ) {
-        final CredentialsProvider provider = new BasicCredentialsProvider();
-        provider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("elastic", "admin"));
-        RestClientBuilder builder = RestClient.builder(new HttpHost("localhost", 9200)).setHttpClientConfigCallback(
-            httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(provider));
-        return new RestHighLevelClient(builder);
+
+    @Test
+    void simple_test_elastic_configuration(@Autowired MockMvc mockMvc) throws Exception {
+        mockMvc
+            .perform(MockMvcRequestBuilders.get("/"))
+            .andExpect(MockMvcResultMatchers.status().isOk());
     }
-
-//    @Test
-//    void getindex() throws IOException {
-////        Launcher.main(new String[]{});
-//        RestHighLevelClient client = restClient();
-//        GetIndexRequest request = new GetIndexRequest("games");
-//        GetIndexResponse getIndexResponse = client.indices().get(request, RequestOptions.DEFAULT);
-//        MappingMetadata indexMappings = getIndexResponse.getMappings().get("games");
-//        Map<String, Object> indexTypeMappings = indexMappings.getSourceAsMap();
-//        assertNotEquals(0, indexTypeMappings.size());
-//    }
-
-
 }

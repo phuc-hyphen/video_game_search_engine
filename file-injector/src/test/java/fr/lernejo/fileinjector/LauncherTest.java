@@ -49,10 +49,9 @@ class LauncherTest {
 
     @Test
     void Launcher_WITH_GOOD_ARGUMENT_Test() {
-        String[] args = {"file-injector/src/test/resources/games.json"};
         IOException test = null;
         try {
-            Launcher.main(args);
+            Launcher.main(new String[]{"/src/test/resources/games.json"});
         } catch (IOException e) {
             test = e;
         }
