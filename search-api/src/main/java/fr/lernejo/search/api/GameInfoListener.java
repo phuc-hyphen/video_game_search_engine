@@ -8,9 +8,12 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.client.indices.GetIndexResponse;
 import org.elasticsearch.cluster.metadata.MappingMetadata;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.xcontent.XContentType;
 import org.springframework.amqp.core.Message;
@@ -29,6 +32,7 @@ import static fr.lernejo.search.api.AmqpConfiguration.GAME_INFO_QUEUE;
 public class GameInfoListener {
 
     private final RestHighLevelClient client;
+    private final String index = "games";
 
     public GameInfoListener(RestHighLevelClient rest) {
         this.client = rest;
@@ -36,43 +40,42 @@ public class GameInfoListener {
 
     @RabbitListener(queues = {GAME_INFO_QUEUE})
     public void onMessage(final Message message) throws IOException {
-
-
-        IndexRequest request = new IndexRequest("games");
-        request.id(message.getMessageProperties().getHeaders().get("game_id").toString())
-            .source(new String(message.getBody(), StandardCharsets.UTF_8), XContentType.JSON);
-//        indexSync(request);
-//        System.out.println(new String(message.getBody(), StandardCharsets.UTF_8));
-
-        indexAsync(request);
-    }
-
-    private void indexAsync(IndexRequest request) {
-        ActionListener<IndexResponse> listener = new ActionListener<IndexResponse>() {
-            @Override
-            public void onResponse(IndexResponse indexResponse) {
-
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                throw new RuntimeException(e);
-            }
-        };
-        client.indexAsync(request, RequestOptions.DEFAULT, listener);
-    }
-
-    private void indexSync(IndexRequest request) {
-        try {
-            IndexResponse response = this.client.index(request, RequestOptions.DEFAULT);
-            System.out.println(response.status());
-        } catch (ElasticsearchException e) {
-            if (e.status() == RestStatus.CONFLICT)
-                throw e;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        String id = message.getMessageProperties().getHeaders().get("game_id").toString();
+        String body = new String(message.getBody(), StandardCharsets.UTF_8);
+        GetIndexRequest getIndexRequest = new GetIndexRequest(index);
+        if (!client.indices().exists(getIndexRequest, RequestOptions.DEFAULT)) {
+            CreateIndex(body);
+        } else {
+            Indexing_games(id, body);
         }
     }
+
+    private void Indexing_games(String id, String body) throws IOException {
+        IndexRequest request = new IndexRequest("games");
+        request.id(id).source(body, XContentType.JSON);
+        IndexResponse response = this.client.index(request, RequestOptions.DEFAULT);
+        System.out.println(response.status());
+    }
+
+    private void CreateIndex(String body) throws IOException {
+        CreateIndexRequest creatIndexRequest = new CreateIndexRequest(index);
+        creatIndexRequest.settings(Settings.builder()
+            .put("index.number_of_shards", 3)
+            .put("index.number_of_replicas", 2)).source(body, XContentType.JSON);
+        client.indices().create(creatIndexRequest, RequestOptions.DEFAULT);
+    }
+
+//    private void indexSync(IndexRequest request) {
+//        try {
+//            IndexResponse response = client.indices().create(creatIndexRequest, RequestOptions.DEFAULT);
+//                System.out.println(response.status());
+//        } catch (ElasticsearchException e) {
+//            if (e.status() == RestStatus.CONFLICT)
+//                throw e;
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 }
 //http://localhost:9200/games/_doc/1
 //http://localhost:9200/_cat/indices/games*?v=true&s=index

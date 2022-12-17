@@ -41,7 +41,7 @@ public class ElasticSearchController {
         SearchRequest searchRequest = new SearchRequest();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 //        .defaultOperator(Operator.AND)size(5)
-        searchSourceBuilder.query(new QueryStringQueryBuilder(query)).size(20);
+        searchSourceBuilder.query(new QueryStringQueryBuilder(query)).size(50);
         searchRequest.source(searchSourceBuilder);
         GetReponse(game_infos, searchRequest);
         return game_infos;
@@ -52,7 +52,6 @@ public class ElasticSearchController {
         try {
             searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
             RestStatus status = searchResponse.status();
-//        System.out.println(status.toString());
             parseReponse(game_infos, searchResponse);
         } catch (ElasticsearchException e) {
             if (e.status() == RestStatus.CONFLICT) throw e;
@@ -65,7 +64,6 @@ public class ElasticSearchController {
         SearchHits hits = searchResponse.getHits();
         SearchHit[] searchHits = hits.getHits();
         for (SearchHit hit : searchHits) {
-//            System.out.println(hit.getSourceAsString());
             Map<String, Object> sourceAsMap = hit.getSourceAsMap();
             game_infos.add(sourceAsMap);
         }
