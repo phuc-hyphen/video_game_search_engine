@@ -49,12 +49,18 @@ public class GameInfoListener {
         Indexing_games(id, body);
     }
 
-    private void Indexing_games(String id, String body) throws IOException {
+    private void Indexing_games(String id, String body){
         System.out.println("new game indexed !!!");
         IndexRequest request = new IndexRequest("games");
-        request.id(id);
-        request.source(body, XContentType.JSON);
-        this.client.index(request, RequestOptions.DEFAULT);
+        request.id(id).source(body, XContentType.JSON);
+        try {
+            this.client.index(request, RequestOptions.DEFAULT);
+        } catch (ElasticsearchException e) {
+            if (e.status() == RestStatus.CONFLICT)
+                throw e;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void CreateIndex() throws IOException {
