@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -34,42 +35,14 @@ class ElasticSearchControllerTest {
         int ExpResult = 2;
         mockMvc
             .perform(MockMvcRequestBuilders.get("/api/games?query=" + query))
-            .andExpect(MockMvcResultMatchers.status().isOk());
-//        MvcResult result = mockMvc
-//            .perform(MockMvcRequestBuilders.get("/api/games?query=" + query))
-//            .andExpect(MockMvcResultMatchers.status().isOk())
-//
-//            .andReturn();
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        String content = result.getResponse().getContentAsString();
-//        List<Map<String, Object>> resultmap = mapper.readValue(content, new TypeReference<>() {
-//        });
-//        assertEquals(ExpResult, resultmap.size(), "not good number response content : " + content  );
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.*", hasSize(ExpResult)));
     }
 
     @Test
-    void GetGamesComplex(@Autowired MockMvc mockMvc) throws Exception {
-        String query = "genre:Strategy AND developer:\"Epic Games\"";
-        int ExpResult = 1;
+    void api_games_with_no_query_respond_with_status_400(@Autowired MockMvc mockMvc) throws Exception {
         mockMvc
-            .perform(MockMvcRequestBuilders.get("/api/games?query=" + query))
-            .andExpect(MockMvcResultMatchers.status().isOk());
-//        MvcResult result = mockMvc
-//            .perform(MockMvcRequestBuilders.get("/api/games?query=" + query))
-//            .andExpect(MockMvcResultMatchers.status().isOk())
-//            .andReturn();
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        String content = result.getResponse().getContentAsString();
-//        try {
-//            // convert JSON string to Map
-//            List<Map<String, Object>> resultmap =
-//                mapper.readValue(content, new TypeReference<List<Map<String, Object>>>() {
-//                });
-//            assertEquals(ExpResult, resultmap.size(), "not good number response");
-//        } catch (IOException e) {
-//            System.out.println(content);
-//        }
+            .perform(MockMvcRequestBuilders.get("/api/games"))
+            .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 }

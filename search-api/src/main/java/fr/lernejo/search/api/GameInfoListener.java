@@ -42,23 +42,8 @@ public class GameInfoListener {
     public void onMessage(final Message message) throws IOException {
         String id = message.getMessageProperties().getHeaders().get("game_id").toString();
         String body = new String(message.getBody(), StandardCharsets.UTF_8);
-        Indexing_games(id, body);
-    }
-
-    private void Indexing_games(String id, String body) throws IOException {
-        System.out.println("new game indexed !!!");
         IndexRequest request = new IndexRequest("games");
         request.id(id).source(body, XContentType.JSON);
-
         this.client.index(request, RequestOptions.DEFAULT);
-
-//        try {
-//        } catch (ElasticsearchException e) {
-//            if (e.status() == RestStatus.CONFLICT)
-//                throw e;
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 }
-//http://localhost:9200/games/_doc/1
