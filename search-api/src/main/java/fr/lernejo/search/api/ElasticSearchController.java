@@ -36,36 +36,24 @@ public class ElasticSearchController {
     }
 
     @GetMapping("/api/games")
-    public List<Map<String, Object>> getQuery(@RequestParam String query) {
+    public List<Map<String, Object>> getQuery(@RequestParam(name = "query") String query) {
         final List<Map<String, Object>> game_infos = new ArrayList<>();
         SearchRequest searchRequest = new SearchRequest();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-//        .defaultOperator(Operator.AND)size(5)
-        searchSourceBuilder.query(new QueryStringQueryBuilder(query)).size(50);
+        searchSourceBuilder.query(new QueryStringQueryBuilder(query));
         searchRequest.source(searchSourceBuilder);
         GetReponse(game_infos, searchRequest);
         return game_infos;
     }
 
     private void GetReponse(List<Map<String, Object>> game_infos, SearchRequest searchRequest) {
-        SearchResponse searchResponse = null;
         try {
-            searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-            RestStatus status = searchResponse.status();
-            parseReponse(game_infos, searchResponse);
+            client.search(searchRequest, RequestOptions.DEFAULT).getHits()
+                .forEach(hit -> game_infos.add(hit.getSourceAsMap()));
         } catch (ElasticsearchException e) {
             if (e.status() == RestStatus.CONFLICT) throw e;
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private static void parseReponse(List<Map<String, Object>> game_infos, SearchResponse searchResponse) {
-        SearchHits hits = searchResponse.getHits();
-        SearchHit[] searchHits = hits.getHits();
-        for (SearchHit hit : searchHits) {
-            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-            game_infos.add(sourceAsMap);
         }
     }
 }
