@@ -38,42 +38,27 @@ public class GameInfoListener {
         this.client = rest;
     }
 
-    @RabbitListener(queues = {GAME_INFO_QUEUE})
+    @RabbitListener(queues = GAME_INFO_QUEUE)
     public void onMessage(final Message message) throws IOException {
         String id = message.getMessageProperties().getHeaders().get("game_id").toString();
         String body = new String(message.getBody(), StandardCharsets.UTF_8);
-        GetIndexRequest getIndexRequest = new GetIndexRequest(index);
-        if (!client.indices().exists(getIndexRequest, RequestOptions.DEFAULT)) {
-            CreateIndex();
-        }
         Indexing_games(id, body);
     }
 
-    private void Indexing_games(String id, String body){
+    private void Indexing_games(String id, String body) throws IOException {
         System.out.println("new game indexed !!!");
         IndexRequest request = new IndexRequest("games");
         request.id(id).source(body, XContentType.JSON);
-        try {
-            this.client.index(request, RequestOptions.DEFAULT);
-        } catch (ElasticsearchException e) {
-            if (e.status() == RestStatus.CONFLICT)
-                throw e;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    private void CreateIndex() throws IOException {
-        System.out.println("new index created !!!");
-        CreateIndexRequest creatIndexRequest = new CreateIndexRequest(index);
-        creatIndexRequest.settings(Settings.builder()
-            .put("index.number_of_shards", 3)
-            .put("index.number_of_replicas", 2));
-//            .source(body, XContentType.JSON);
-        client.indices().create(creatIndexRequest, RequestOptions.DEFAULT);
-    }
-    //https://discuss.elastic.co/t/compressor-detection-can-only-be-called-on-some-xcontent-bytes/184959
+        this.client.index(request, RequestOptions.DEFAULT);
 
+//        try {
+//        } catch (ElasticsearchException e) {
+//            if (e.status() == RestStatus.CONFLICT)
+//                throw e;
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+    }
 }
 //http://localhost:9200/games/_doc/1
-//http://localhost:9200/_cat/indices/games*?v=true&s=index

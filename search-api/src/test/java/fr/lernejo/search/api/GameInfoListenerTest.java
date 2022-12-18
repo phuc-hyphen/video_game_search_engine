@@ -42,17 +42,17 @@ class GameInfoListenerTest {
 
     @Test
     void adding_game_test() throws JsonProcessingException {
-//        final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
-//        final Game_info game_test = mapper.readValue(SAMPLE_RESQUEST_PAYLOAD, Game_info.class);
-//        final AbstractApplicationContext springContext = new AnnotationConfigApplicationContext(Launcher.class);
-//        final var rabbitTemplate = springContext.getBean(RabbitTemplate.class);
-//        mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-//        String str_game = mapper.writeValueAsString(game_test);
-//        rabbitTemplate.convertSendAndReceive("", "game_info", str_game, m -> {
-//            m.getMessageProperties().getHeaders().put("game_id", game_test.id());
-//            m.getMessageProperties().setContentType("appplication/json");
-//            return m;
-//        });
+        final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+        final Game_info game_test = mapper.readValue(SAMPLE_RESQUEST_PAYLOAD, Game_info.class);
+        final AbstractApplicationContext springContext = new AnnotationConfigApplicationContext(Launcher.class);
+        final var rabbitTemplate = springContext.getBean(RabbitTemplate.class);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+        String str_game = mapper.writeValueAsString(game_test);
+        rabbitTemplate.convertSendAndReceive("", "game_info", str_game, m -> {
+            m.getMessageProperties().getHeaders().put("game_id", game_test.id());
+            m.getMessageProperties().setContentType("appplication/json");
+            return m;
+        });
     }
 
 }
