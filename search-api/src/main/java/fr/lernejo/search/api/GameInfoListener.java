@@ -38,7 +38,7 @@ public class GameInfoListener {
         this.client = rest;
     }
 
-    @RabbitListener(queues = GAME_INFO_QUEUE)
+    @RabbitListener(queues = {GAME_INFO_QUEUE})
     public void onMessage(final Message message) throws IOException {
         String id = message.getMessageProperties().getHeaders().get("game_id").toString();
         String body = new String(message.getBody(), StandardCharsets.UTF_8);
