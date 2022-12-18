@@ -44,40 +44,30 @@ public class GameInfoListener {
         String body = new String(message.getBody(), StandardCharsets.UTF_8);
         GetIndexRequest getIndexRequest = new GetIndexRequest(index);
         if (!client.indices().exists(getIndexRequest, RequestOptions.DEFAULT)) {
-            CreateIndex(body);
-        } else {
-            Indexing_games(id, message);
+            CreateIndex();
         }
+        Indexing_games(id, body);
     }
 
-    private void Indexing_games(String id, Message message) throws IOException {
-        IndexRequest request = new IndexRequest("games");
-        request.id(id).source(new String(message.getBody(), StandardCharsets.UTF_8), XContentType.JSON);
-        IndexResponse response = this.client.index(request, RequestOptions.DEFAULT);
+    private void Indexing_games(String id, String body) throws IOException {
         System.out.println("new game indexed !!!");
+        IndexRequest request = new IndexRequest("games");
+        request.id(id);
+        request.source(body, XContentType.JSON);
+        this.client.index(request, RequestOptions.DEFAULT);
     }
 
-    private void CreateIndex(String body) throws IOException {
+    private void CreateIndex() throws IOException {
+        System.out.println("new index created !!!");
         CreateIndexRequest creatIndexRequest = new CreateIndexRequest(index);
         creatIndexRequest.settings(Settings.builder()
             .put("index.number_of_shards", 3)
             .put("index.number_of_replicas", 2));
 //            .source(body, XContentType.JSON);
         client.indices().create(creatIndexRequest, RequestOptions.DEFAULT);
-        System.out.println("new index created !!!");
     }
     //https://discuss.elastic.co/t/compressor-detection-can-only-be-called-on-some-xcontent-bytes/184959
-//    private void indexSync(IndexRequest request) {
-//        try {
-//            IndexResponse response = client.indices().create(creatIndexRequest, RequestOptions.DEFAULT);
-//                System.out.println(response.status());
-//        } catch (ElasticsearchException e) {
-//            if (e.status() == RestStatus.CONFLICT)
-//                throw e;
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+
 }
 //http://localhost:9200/games/_doc/1
 //http://localhost:9200/_cat/indices/games*?v=true&s=index

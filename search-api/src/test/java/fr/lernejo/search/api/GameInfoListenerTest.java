@@ -1,58 +1,58 @@
 package fr.lernejo.search.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.assertj.core.api.Assertions;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
-import org.elasticsearch.client.RestHighLevelClient;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Base64;
 
 
 class GameInfoListenerTest {
-    String SAMPLE_RESPONSE_PAYLOAD = """
+    String SAMPLE_RESQUEST_PAYLOAD = """
         {
-            "id":"1000",
-            "title": "my super game",
-            "thumbnail": "http://somehost/somepathwithcorsdisabled",
-            "short_description": "awesome game",
-            "genre": "ftps",
-            "platform": "PS1000",
-            "publisher": "Machin produces",
-            "developer": "Bidule Studios",
-            "release_date": "2022-02-12"
+              "id": 1,
+              "title": "Dauntless",
+              "thumbnail": "https:\\/\\/www.freetogame.com\\/g\\/1\\/thumbnail.jpg",
+              "short_description": "A free-to-play, co-op action RPG with gameplay similar to Monster Hunter.",
+              "game_url": "https:\\/\\/www.freetogame.com\\/open\\/dauntless",
+              "genre": "MMORPG",
+              "platform": "PC (Windows)",
+              "publisher": "Phoenix Labs",
+              "developer": "Phoenix Labs, Iron Galaxy",
+              "release_date": "2019-05-21",
+              "freetogame_profile_url": "https:\\/\\/www.freetogame.com\\/dauntless"
         }
         """.stripTrailing();
 
+    public record Game_info(int id, String title, String thumbnail, String short_description, String game_url,
+                            String genre, String platform, String publisher, String developer,
+                            @JsonSerialize(using = LocalDateSerializer.class) LocalDate release_date,
+                            String freetogame_profile_url) {
+    }
 
     @Test
-    void check_existant_of_doc() {
-        final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
-
-        final AbstractApplicationContext springContext = new AnnotationConfigApplicationContext(Launcher.class);
-        final var rabbitTemplate = springContext.getBean(RabbitTemplate.class);
-        mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-
-        rabbitTemplate.convertSendAndReceive("", "game_info", SAMPLE_RESPONSE_PAYLOAD, m -> {
-            m.getMessageProperties().getHeaders().put("game_id", 1000);
-            m.getMessageProperties().setContentType("appplication/json");
-            return m;
-        });
+    void adding_game_test() throws JsonProcessingException {
+//        final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+//        final Game_info game_test = mapper.readValue(SAMPLE_RESQUEST_PAYLOAD, Game_info.class);
+//        final AbstractApplicationContext springContext = new AnnotationConfigApplicationContext(Launcher.class);
+//        final var rabbitTemplate = springContext.getBean(RabbitTemplate.class);
+//        mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+//        String str_game = mapper.writeValueAsString(game_test);
+//        rabbitTemplate.convertSendAndReceive("", "game_info", str_game, m -> {
+//            m.getMessageProperties().getHeaders().put("game_id", game_test.id());
+//            m.getMessageProperties().setContentType("appplication/json");
+//            return m;
+//        });
     }
 
 }
