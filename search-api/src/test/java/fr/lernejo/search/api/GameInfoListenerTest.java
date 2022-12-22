@@ -14,13 +14,12 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.testcontainers.containers.RabbitMQContainer;
 
 import java.io.IOException;
-import java.net.ConnectException;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Base64;
+
 import java.util.concurrent.TimeoutException;
 
 
