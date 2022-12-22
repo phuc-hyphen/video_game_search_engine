@@ -34,7 +34,6 @@ public class Launcher {
     private static void SendingMessages(ObjectMapper mapper, AbstractApplicationContext springContext, String filePath) throws IOException, InvalidPathException {
         final var rabbitTemplate = springContext.getBean(RabbitTemplate.class);
         mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-//        final Game_info[] games = mapper.readValue(new File(filePath), Game_info[].class);
         final Game_info[] games = mapper.readValue(Paths.get(filePath).toFile(), Game_info[].class);
 
         for (Game_info game : games) {
