@@ -1,5 +1,6 @@
 package fr.lernejo.search.api;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.util.Base64;
 
 
 class ElasticSearchConfigurationTest {
+
+
     private static String getBasicAuthenticationHeader(String username, String password) {
         String valueToEncode = username + ":" + password;
         return "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
@@ -30,7 +33,6 @@ class ElasticSearchConfigurationTest {
         } catch (IOException | InterruptedException e) {
             test = (IOException) e;
         }
-
-//        Assertions.assertThat(response.statusCode()).isEqualTo(200);
+        Assertions.assertThat(test).isNull();
     }
 }

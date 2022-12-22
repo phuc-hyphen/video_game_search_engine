@@ -54,24 +54,22 @@ class LauncherTest {
 
         IOException test = null;
         try {
-//            RabbitMQContainer rabbitMQContainer = new RabbitMQContainer();
-//            rabbitMQContainer.start();
-            ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost("localhost");
-            factory.setPort(5672);
-            factory.setUsername("guest");
-            factory.setPassword("guest");
-            Connection connection = factory.newConnection();
-            Channel channel = connection.createChannel();
+
+//            ConnectionFactory factory = new ConnectionFactory();
+//            factory.setHost("localhost");
+//            factory.setPort(5672);
+//            factory.setUsername("guest");
+//            factory.setPassword("guest");
+//            Connection connection = factory.newConnection();
+//            Channel channel = connection.createChannel();
 
             Launcher.main(new String[]{"../file-injector/src/test/resources/games.json"});
 
-            channel.close();
-            connection.close();
-//            rabbitMQContainer.stop();
+//            channel.close();
+//            connection.close();
 
 
-        } catch (IOException | TimeoutException e) {
+        } catch (IOException e) {
             test = (IOException) e;
         }
 //        Assertions.assertThat(test).isNull();

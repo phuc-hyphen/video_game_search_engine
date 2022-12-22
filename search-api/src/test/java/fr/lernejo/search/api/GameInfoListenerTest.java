@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
@@ -50,13 +51,13 @@ class GameInfoListenerTest {
     void adding_game_test() {
         IOException test = null;
         try {
-            ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost("localhost");
-            factory.setPort(5672);
-            factory.setUsername("guest");
-            factory.setPassword("guest");
-            Connection connection = factory.newConnection();
-            Channel channel = connection.createChannel();
+//            ConnectionFactory factory = new ConnectionFactory();
+//            factory.setHost("localhost");
+//            factory.setPort(5672);
+//            factory.setUsername("guest");
+//            factory.setPassword("guest");
+//            Connection connection = factory.newConnection();
+//            Channel channel = connection.createChannel();
 
             final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
             final Game_info game_test = mapper.readValue(SAMPLE_RESQUEST_PAYLOAD, Game_info.class);
@@ -69,12 +70,14 @@ class GameInfoListenerTest {
                 m.getMessageProperties().setContentType("appplication/json");
                 return m;
             });
-            channel.close();
-            connection.close();
+//            channel.close();
+//            connection.close();
 
-        } catch (IOException | TimeoutException e) {
+        } catch (IOException e) {
             test = (IOException) e;
         }
+        Assertions.assertThat(test).isNull();
+
     }
 
 
