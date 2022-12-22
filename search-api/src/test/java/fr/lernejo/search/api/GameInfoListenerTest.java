@@ -6,15 +6,22 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.testcontainers.containers.RabbitMQContainer;
 
+import java.io.IOException;
+import java.net.ConnectException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Base64;
+import java.util.concurrent.TimeoutException;
 
 
 class GameInfoListenerTest {
@@ -41,18 +48,35 @@ class GameInfoListenerTest {
     }
 
     @Test
-    void adding_game_test() throws JsonProcessingException {
-        final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
-        final Game_info game_test = mapper.readValue(SAMPLE_RESQUEST_PAYLOAD, Game_info.class);
-        final AbstractApplicationContext springContext = new AnnotationConfigApplicationContext(Launcher.class);
-        final var rabbitTemplate = springContext.getBean(RabbitTemplate.class);
-        mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-        String str_game = mapper.writeValueAsString(game_test);
-        rabbitTemplate.convertSendAndReceive("", "game_info", str_game, m -> {
-            m.getMessageProperties().getHeaders().put("game_id", game_test.id());
-            m.getMessageProperties().setContentType("appplication/json");
-            return m;
-        });
+    void adding_game_test() {
+        IOException test = null;
+        try {
+            ConnectionFactory factory = new ConnectionFactory();
+            factory.setHost("localhost");
+            factory.setPort(5672);
+            factory.setUsername("guest");
+            factory.setPassword("guest");
+            Connection connection = factory.newConnection();
+            Channel channel = connection.createChannel();
+
+            final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+            final Game_info game_test = mapper.readValue(SAMPLE_RESQUEST_PAYLOAD, Game_info.class);
+            final AbstractApplicationContext springContext = new AnnotationConfigApplicationContext(Launcher.class);
+            final var rabbitTemplate = springContext.getBean(RabbitTemplate.class);
+            mapper.enable(SerializationFeature.INDENT_OUTPUT).setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+            String str_game = mapper.writeValueAsString(game_test);
+            rabbitTemplate.convertSendAndReceive("", "game_info", str_game, m -> {
+                m.getMessageProperties().getHeaders().put("game_id", game_test.id());
+                m.getMessageProperties().setContentType("appplication/json");
+                return m;
+            });
+            channel.close();
+            connection.close();
+
+        } catch (IOException | TimeoutException e) {
+            test = (IOException) e;
+        }
     }
+
 
 }
