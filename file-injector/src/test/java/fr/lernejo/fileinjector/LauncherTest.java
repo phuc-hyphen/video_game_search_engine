@@ -46,33 +46,23 @@ class LauncherTest {
             .waitingFor(Wait.forListeningPort());
 
     @Test
-    void Launcher_WITH_GOOD_ARGUMENT_Test() {
+    void Launcher_WITH_GOOD_ARGUMENT_Test() throws IOException {
 //            RabbitMQTestImages.RABBITMQ_IMAGE
 //        final RabbitMQContainer environment =
 //            new RabbitMQContainer("rabbitmq:3.9.13-management-alpine")
 //                .withExposedPorts(DEFAULT_AMQP_PORT, DEFAULT_HTTP_PORT);
-
-        IOException test = null;
-        try {
-
-//            ConnectionFactory factory = new ConnectionFactory();
-//            factory.setHost("localhost");
-//            factory.setPort(5672);
-//            factory.setUsername("guest");
-//            factory.setPassword("guest");
-//            Connection connection = factory.newConnection();
-//            Channel channel = connection.createChannel();
-
-            Launcher.main(new String[]{"../file-injector/src/test/resources/games.json"});
-
-//            channel.close();
-//            connection.close();
-
-
-        } catch (IOException e) {
-            test = (IOException) e;
-        }
-//        Assertions.assertThat(test).isNull();
+        String jsonGameFilePath = "../file-injector/src/test/resources/games.json";
+        Launcher.main(new String[]{jsonGameFilePath});
+//        IOException test = null;
+//        try {
+//
+//            Launcher.main(new String[]{"../file-injector/src/test/resources/games.json"});
+//
+//
+//
+//        } catch (IOException e) {
+//            test = (IOException) e;
+//        }
     }
 
     @Test
