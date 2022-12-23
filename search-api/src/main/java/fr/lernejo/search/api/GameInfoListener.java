@@ -32,19 +32,18 @@ import static fr.lernejo.search.api.AmqpConfiguration.GAME_INFO_QUEUE;
 public class GameInfoListener {
 
     private final RestHighLevelClient client;
-
     public GameInfoListener(RestHighLevelClient rest) {
         this.client = rest;
     }
 
     @RabbitListener(queues = GAME_INFO_QUEUE)
-    public void onMessage(String body, @Header("game_id") String id) {
-//        String id = message.getMessageProperties().getHeaders().get("game_id").toString();
-//        String body = new String(message.getBody(), StandardCharsets.UTF_8);
+    public void onMessage(final Message message){
+        String id = message.getMessageProperties().getHeaders().get("game_id").toString();
+        String body = new String(message.getBody(), StandardCharsets.UTF_8);
         Indexing_games(id, body);
     }
 
-    private void Indexing_games(String id, String body) {
+    private void Indexing_games(String id, String body){
         IndexRequest request = new IndexRequest("games");
         request.id(id).source(body, XContentType.JSON);
         try {
