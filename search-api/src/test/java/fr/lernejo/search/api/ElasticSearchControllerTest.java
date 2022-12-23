@@ -39,6 +39,14 @@ class ElasticSearchControllerTest {
     }
 
     @Test
+    void GetNotthing(@Autowired MockMvc mockMvc) throws Exception {
+        String query = "";
+        mockMvc
+            .perform(MockMvcRequestBuilders.get("/api/games?query=" + query))
+            .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
     void api_games_with_no_query_respond_with_status_400(@Autowired MockMvc mockMvc) throws Exception {
         mockMvc
             .perform(MockMvcRequestBuilders.get("/api/games"))
