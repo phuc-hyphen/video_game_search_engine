@@ -32,8 +32,6 @@ import static fr.lernejo.search.api.AmqpConfiguration.GAME_INFO_QUEUE;
 public class GameInfoListener {
 
     private final RestHighLevelClient client;
-    private final String index = "games";
-
     public GameInfoListener(RestHighLevelClient rest) {
         this.client = rest;
     }
