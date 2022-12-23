@@ -39,26 +39,25 @@ class LauncherTest {
 //            .withExposedService("rabbitmq", DEFAULT_AMQP_PORT)
 //            .withExposedService("rabbitmq", DEFAULT_HTTP_PORT);
 
-    @ClassRule
-    public static GenericContainer rabbitMQContainer =
-        new GenericContainer("rabbitmq:3.9.13-management-alpine")
-            .withExposedPorts(5672, 15672)
-            .waitingFor(Wait.forListeningPort());
+//    @ClassRule
+//    public static GenericContainer rabbitMQContainer =
+//        new GenericContainer("rabbitmq:3.9.13-management-alpine")
+//            .withExposedPorts(5672, 15672)
+//            .waitingFor(Wait.forListeningPort());
 
     @Test
     void Launcher_WITH_GOOD_ARGUMENT_Test() throws IOException {
-//            RabbitMQTestImages.RABBITMQ_IMAGE
-//        final RabbitMQContainer environment =
-//            new RabbitMQContainer("rabbitmq:3.9.13-management-alpine")
-//                .withExposedPorts(DEFAULT_AMQP_PORT, DEFAULT_HTTP_PORT);
-        String jsonGameFilePath = "../file-injector/src/test/resources/games.json";
-        Launcher.main(new String[]{jsonGameFilePath});
+
+
+
 //        IOException test = null;
 //        try {
 //
 //            Launcher.main(new String[]{"../file-injector/src/test/resources/games.json"});
 //
 //
+        String jsonGameFilePath = "../file-injector/src/test/resources/games.json";
+        Launcher.main(new String[]{jsonGameFilePath});
 //
 //        } catch (IOException e) {
 //            test = (IOException) e;
